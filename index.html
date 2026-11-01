@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A simple campus lost and found board for students.">
+  <title>Campus Lost & Found</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="Campus Lost and Found home">
+      <span class="brand-mark">L&F</span>
+      <span>Campus <strong>Lost & Found</strong></span>
+    </a>
+    <a class="header-link" href="#report">Post an item <span aria-hidden="true">＋</span></a>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <p class="eyebrow">ONE CAMPUS. ONE PLACE TO RECONNECT.</p>
+      <h1>Lost something?<br><span>Let's find it.</span></h1>
+      <p class="hero-copy">A shared noticeboard for things misplaced or found around campus. Search the posts, make a report, and help an item get back to its owner.</p>
+      <a class="primary-button hero-button" href="#report">Post a lost or found item</a>
+      <div class="hero-note"><span class="live-dot"></span> A student-powered lost & found board</div>
+    </section>
+
+    <section class="stats" aria-label="Post summary">
+      <article class="stat-card"><span class="stat-label">Total posts</span><strong id="total-count">0</strong></article>
+      <article class="stat-card"><span class="stat-label">Still open</span><strong id="open-count">0</strong></article>
+      <article class="stat-card"><span class="stat-label">Reunited</span><strong id="resolved-count">0</strong></article>
+    </section>
+
+    <section class="board-section" id="browse">
+      <div class="section-heading">
+        <div><p class="eyebrow">THE NOTICEBOARD</p><h2>Browse items</h2></div>
+        <span class="results-label" id="results-label">0 posts</span>
+      </div>
+      <div class="toolbar">
+        <label class="search-box">
+          <span aria-hidden="true">⌕</span>
+          <input id="search-input" type="search" placeholder="Search phone, ID card, books..." aria-label="Search posts">
+        </label>
+        <select id="type-filter" aria-label="Filter by post type">
+          <option value="all">All posts</option>
+          <option value="lost">Lost items</option>
+          <option value="found">Found items</option>
+        </select>
+        <select id="status-filter" aria-label="Filter by status">
+          <option value="all">All statuses</option>
+          <option value="open">Open</option>
+          <option value="claimed">Claimed</option>
+          <option value="returned">Returned</option>
+        </select>
+      </div>
+      <div class="item-grid" id="item-grid" aria-live="polite"></div>
+      <div class="empty-state hidden" id="empty-state">
+        <div class="empty-icon">⌕</div>
+        <h3>No matching posts</h3>
+        <p>Try another search or filter, or create a new post.</p>
+      </div>
+    </section>
+
+    <section class="report-section" id="report">
+      <div class="report-intro">
+        <p class="eyebrow">ADD TO THE BOARD</p>
+        <h2>Post an item</h2>
+        <p>Share enough detail to help someone recognise the item. Don't include passwords, PINs, or other private information.</p>
+        <div class="tip-card"><strong>Quick tip</strong><span>For an ID card or phone, leave out sensitive numbers. The owner can describe those details privately when contacting you.</span></div>
+      </div>
+      <form id="item-form" class="item-form">
+        <input type="hidden" id="edit-id">
+        <div class="form-title-row">
+          <h3 id="form-heading">Create a post</h3>
+          <span class="required-note">* Required</span>
+        </div>
+        <div class="field">
+          <label for="post-type">What are you reporting? *</label>
+          <select id="post-type" required>
+            <option value="lost">I lost an item</option>
+            <option value="found">I found an item</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="item-name">Item name *</label>
+          <input id="item-name" maxlength="60" placeholder="e.g. Black Samsung phone" required>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="category">Category *</label>
+            <select id="category" required>
+              <option value="Electronics">Electronics</option>
+              <option value="ID / Cards">ID / Cards</option>
+              <option value="Books / Notes">Books / Notes</option>
+              <option value="Bags / Clothing">Bags / Clothing</option>
+              <option value="Keys">Keys</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="item-date">Date *</label>
+            <input id="item-date" type="date" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="location">Where was it lost or found? *</label>
+          <input id="location" maxlength="100" placeholder="e.g. Library, Block B" required>
+        </div>
+        <div class="field">
+          <label for="description">Description *</label>
+          <textarea id="description" rows="3" maxlength="400" placeholder="Add colour, brand, distinguishing features..." required></textarea>
+        </div>
+        <div class="field">
+          <label for="contact">How can another student contact you? *</label>
+          <input id="contact" maxlength="100" placeholder="School email or agreed contact method" required>
+          <small>Use a contact method you're comfortable sharing on a campus noticeboard.</small>
+        </div>
+        <div class="form-actions">
+          <button class="primary-button" type="submit" id="submit-button">Publish post</button>
+          <button class="text-button hidden" type="button" id="cancel-edit">Cancel edit</button>
+        </div>
+        <p class="form-message" id="form-message" role="status"></p>
+      </form>
+    </section>
+  </main>
+
+  <footer><span class="brand-mark small-mark">L&F</span><span>Campus Lost & Found</span><span class="footer-note">Look out for one another.</span></footer>
+
+  <dialog id="status-dialog" class="status-dialog">
+    <form method="dialog" class="dialog-inner">
+      <button class="dialog-close" aria-label="Close">×</button>
+      <p class="eyebrow">UPDATE POST</p>
+      <h3>Change item status</h3>
+      <p id="dialog-item-name" class="dialog-item-name"></p>
+      <label for="new-status">Choose a status</label>
+      <select id="new-status">
+        <option value="open">Open — still looking / waiting</option>
+        <option value="claimed">Claimed — someone has claimed it</option>
+        <option value="returned">Returned — back with its owner</option>
+      </select>
+      <div class="dialog-actions">
+        <button class="primary-button" id="save-status" type="button">Save status</button>
+        <button class="text-button" value="cancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>
