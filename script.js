@@ -1,3 +1,4 @@
+import { supabase } from "./supabase.js";
 const STORAGE_KEY = "campusLostFoundPosts_v1";
 
 const itemForm = document.getElementById("item-form");
