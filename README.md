@@ -22,3 +22,14 @@ This is a front-end prototype. Browser local storage is local to one browser pro
 - `index.html` — page structure
 - `styles.css` — layout and appearance
 - `script.js` — form handling, CRUD actions, filters, and local storage
+ 
+ ## features Developed 
+- Creating lost and found item posts
+- Viewing available posts
+- Editing existing posts
+- Deleting posts
+- Updating item status
+- Searching for items
+- Filtering posts by type and status
+- Recording and displaying student department
+- Saving posts using browser local storage
