@@ -76,6 +76,7 @@ function renderPosts() {
       <p class="card-description">${escapeText(post.description)}</p>
       <div class="card-meta">
         <span>▦ <b>${escapeText(post.category)}</b></span>
+        <span>Department: <b>${escapeText(post.department || "Not specified")}</b></span>
         <span>⌖ ${escapeText(post.location)}</span>
         <span>◷ ${formatDate(post.date)}</span>
       </div>
@@ -111,6 +112,7 @@ itemForm.addEventListener("submit", (event) => {
     type: document.getElementById("post-type").value,
     name: document.getElementById("item-name").value.trim(),
     category: document.getElementById("category").value,
+    department: document.getElementById("department").value,
     date: document.getElementById("item-date").value,
     location: document.getElementById("location").value.trim(),
     description: document.getElementById("description").value.trim(),
@@ -145,6 +147,7 @@ itemGrid.addEventListener("click", (event) => {
     document.getElementById("post-type").value = post.type;
     document.getElementById("item-name").value = post.name;
     document.getElementById("category").value = post.category;
+    document.getElementById("department").value = post.department || "";
     document.getElementById("item-date").value = post.date;
     document.getElementById("location").value = post.location;
     document.getElementById("description").value = post.description;
