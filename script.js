@@ -1,4 +1,18 @@
 import { supabase } from "./supabase.js";
+async function testSupabaseConnection() {
+  const { data, error } = await supabase
+    .from("items")
+    .select("*")
+    .limit(1);
+
+  if (error) {
+    console.error("Supabase connection failed:", error.message);
+  } else {
+    console.log("Supabase connected successfully!", data);
+  }
+}
+
+testSupabaseConnection();
 const STORAGE_KEY = "campusLostFoundPosts_v1";
 
 const itemForm = document.getElementById("item-form");
@@ -104,38 +118,6 @@ function resetForm() {
   document.getElementById("cancel-edit").classList.add("hidden");
   document.getElementById("form-message").textContent = "";
 }
-
-itemForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-
-  const editId = document.getElementById("edit-id").value;
-  const postData = {
-    type: document.getElementById("post-type").value,
-    name: document.getElementById("item-name").value.trim(),
-    category: document.getElementById("category").value,
-    department: document.getElementById("department").value,
-    date: document.getElementById("item-date").value,
-    location: document.getElementById("location").value.trim(),
-    description: document.getElementById("description").value.trim(),
-    contact: document.getElementById("contact").value.trim()
-  };
-
-  if (Object.values(postData).some((value) => !value)) return;
-
-  if (editId) {
-    posts = posts.map((post) => post.id === editId ? { ...post, ...postData } : post);
-    document.getElementById("form-message").textContent = "Your post has been updated.";
-  } else {
-    posts.unshift({ id: makeId(), ...postData, status: "open", createdAt: new Date().toISOString() });
-    document.getElementById("form-message").textContent = "Your post has been published.";
-  }
-
-  savePosts();
-  renderPosts();
-  resetForm();
-  document.getElementById("browse").scrollIntoView({ behavior: "smooth" });
-});
-
 itemGrid.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-action]");
   if (!button) return;
@@ -191,3 +173,84 @@ typeFilter.addEventListener("change", renderPosts);
 statusFilter.addEventListener("change", renderPosts);
 
 renderPosts();
+// SIGN UP
+const signupForm = document.getElementById("signup-form");
+
+signupForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById("signup-email").value;
+    const password = document.getElementById("signup-password").value;
+
+    const { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: password
+    });
+
+    const message = document.getElementById("auth-message");
+
+    if (error) {
+        message.textContent = error.message;
+    } else {
+        message.textContent = "Account created! Check your email for confirmation.";
+        signupForm.reset();
+    }
+});
+
+
+// LOGIN
+const loginForm = document.getElementById("login-form");
+
+loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById("login-email").value;
+    const password = document.getElementById("login-password").value;
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password
+    });
+
+    const message = document.getElementById("auth-message");
+
+    if (error) {
+        message.textContent = error.message;
+    } else {
+        message.textContent = "Login successful!";
+        loginForm.reset();
+    }
+});
+// PASSWORD RECOVERY
+
+const resetPasswordForm = document.getElementById("reset-password-form");
+
+// Check whether the user arrived through a password recovery link
+supabase.auth.onAuthStateChange((event, session) => {
+    if (event === "PASSWORD_RECOVERY") {
+        resetPasswordForm.hidden = false;
+        document.getElementById("auth-message").textContent =
+            "Enter your new password below.";
+    }
+});
+
+// Save the new password
+resetPasswordForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const newPassword = document.getElementById("new-password").value;
+
+    const { error } = await supabase.auth.updateUser({
+        password: newPassword
+    });
+
+    const message = document.getElementById("auth-message");
+
+    if (error) {
+        message.textContent = error.message;
+    } else {
+        message.textContent = "Password updated successfully! You can now log in.";
+        resetPasswordForm.reset();
+        resetPasswordForm.hidden = true;
+    }
+});

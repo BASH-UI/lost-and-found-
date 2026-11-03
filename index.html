@@ -9,6 +9,65 @@
   <script type="module" src="script.js" defer></script>
 </head>
 <body>
+  <section id="auth-section">
+    <h2>Campus Lost & Found</h2>
+
+    <form id="signup-form">
+        <h3>Create Account</h3>
+
+        <input
+            type="email"
+            id="signup-email"
+            placeholder="Email address"
+            required
+        >
+
+        <input
+            type="password"
+            id="signup-password"
+            placeholder="Password"
+            required
+            minlength="6"
+        >
+
+        <button type="submit">Sign Up</button>
+    </form>
+
+    <form id="login-form">
+        <h3>Login</h3>
+
+        <input
+            type="email"
+            id="login-email"
+            placeholder="Email address"
+            required
+        >
+
+        <input
+            type="password"
+            id="login-password"
+            placeholder="Password"
+            required
+        >
+        <form id="reset-password-form" hidden>
+    <h3>Choose a New Password</h3>
+
+    <input
+        type="password"
+        id="new-password"
+        placeholder="Enter new password"
+        required
+        minlength="6"
+    >
+
+    <button type="submit">Update Password</button>
+</form>
+
+        <button type="submit">Login</button>
+    </form>
+
+    <p id="auth-message"></p>
+</section>
   <header class="site-header">
     <a class="brand" href="#" aria-label="Campus Lost and Found home">
       <span class="brand-mark">L&F</span>
