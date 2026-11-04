@@ -33,6 +33,7 @@ ChatGPT assisted with:
 - Supabase database setup and SQL schema suggestions.
 - GitHub and Vercel deployment troubleshooting.
 - README and AI usage documentation drafts.
+- AI assistance was used to organize project screenshots, choose appropriate filenames, create the screenshots folder, and add Markdown image links to the README.md file.
 
 ## 4. Changes I Made to AI-Generated Code
 
@@ -46,6 +47,7 @@ Some of the changes included:
 - Modifying JavaScript functionality while implementing the application.
 - Updating Git and Vercel configuration to resolve deployment issues.
 - Working through Supabase configuration and database setup.
+- I created the screenshots folder, selected and renamed the screenshots, moved them into the correct project directory, and added the image links to README.md with guidance from ChatGPT.
 
 I made development decisions based on the needs of the project and tested changes to understand how they affected the application.
 
