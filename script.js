@@ -23,17 +23,21 @@ const statusFilter = document.getElementById("status-filter");
 const emptyState = document.getElementById("empty-state");
 const statusDialog = document.getElementById("status-dialog");
 
-let posts = loadPosts();
+let posts = [];
 let statusPostId = null;
 
-function loadPosts() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : [];
-  } catch (error) {
-    console.error("Could not load saved posts:", error);
-    return [];
-  }
+async function loadPosts() {
+    const { data, error } = await supabase
+        .from("items")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        console.error("Could not load posts:", error.message);
+        return [];
+    }
+
+    return data;
 }
 
 function savePosts() {
@@ -63,20 +67,6 @@ function updateStats() {
   document.getElementById("resolved-count").textContent = posts.filter((post) => post.status === "returned").length;
 }
 
-function renderPosts() {
-  const searchTerm = searchInput.value.trim().toLowerCase();
-  const selectedType = typeFilter.value;
-  const selectedStatus = statusFilter.value;
-
-  const visiblePosts = posts.filter((post) => {
-    const searchableText = [
-      post.name, post.category, post.description, post.location, post.type
-    ].join(" ").toLowerCase();
-
-    return searchableText.includes(searchTerm)
-      && (selectedType === "all" || post.type === selectedType)
-      && (selectedStatus === "all" || post.status === selectedStatus);
-  });
 
   document.getElementById("results-label").textContent =
     `${visiblePosts.length} ${visiblePosts.length === 1 ? "post" : "posts"}`;
@@ -108,11 +98,11 @@ function renderPosts() {
 
   emptyState.classList.toggle("hidden", visiblePosts.length !== 0);
   updateStats();
-}
+
 
 function resetForm() {
   itemForm.reset();
-  document.getElementById("edit-id").value = "";
+  document.getElementById("edit-id").Falue = "";
   document.getElementById("form-heading").textContent = "Create a post";
   document.getElementById("submit-button").textContent = "Publish post";
   document.getElementById("cancel-edit").classList.add("hidden");
@@ -172,7 +162,12 @@ searchInput.addEventListener("input", renderPosts);
 typeFilter.addEventListener("change", renderPosts);
 statusFilter.addEventListener("change", renderPosts);
 
-renderPosts();
+async function initializeApp() {
+    posts = await loadPosts();
+    renderPosts();
+}
+
+initializeApp();
 // SIGN UP
 const signupForm = document.getElementById("signup-form");
 
