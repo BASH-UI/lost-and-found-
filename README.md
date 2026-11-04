@@ -144,4 +144,16 @@ Because the application currently uses `localStorage`, test posts are stored sep
 
 [Campus Lost & Found – Live Website](https://lost-and-found-git-main-bash-ui.vercel.app/)
 
+## 10. Screenshots
 
+### Homepage
+![Homepage](screenshots/homepage.png)
+
+### Create Post
+![Create Post](screenshots/create-post.png)
+
+### Lost and Found Listings
+![Listings](screenshots/listings.png)
+
+### Search and Filter
+![Search and Filter](screenshots/search-filter.png)
