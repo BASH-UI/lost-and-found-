@@ -1,4 +1,4 @@
-
+import { supabase } from "./supabase.js";
 const STORAGE_KEY = "campusLostFoundPosts_v1";
 
 const itemForm = document.getElementById("item-form");
@@ -146,6 +146,7 @@ function resetForm() {
 // CREATE AND UPDATE POSTS
 itemForm.addEventListener("submit", (event) => {
   event.preventDefault();
+  console.log("LOGIN FORM SUBMITTED");
 
   const editId = document.getElementById("edit-id").value;
 
@@ -267,7 +268,139 @@ searchInput.addEventListener("input", renderPosts);
 typeFilter.addEventListener("change", renderPosts);
 statusFilter.addEventListener("change", renderPosts);
 
+ // MANAGE USER SESSION
+supabase.auth.onAuthStateChange((event, session) => {
+    // Keep the password recovery screen visible
+    if (event === "PASSWORD_RECOVERY") return;
+
+    const loggedIn = !!session;
+
+    document.getElementById("signup-form").hidden = loggedIn;
+    document.getElementById("login-form").hidden = loggedIn;
+    document.getElementById("logout-btn").hidden = !loggedIn;
+});
+
+
 // START APPLICATION
+// USER SIGNUP
+document.getElementById("signup-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const email = document.getElementById("signup-email").value.trim();
+  const password = document.getElementById("signup-password").value;
+  const message = document.getElementById("auth-message");
+
+  message.textContent = "Creating your account...";
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password
+  });
+
+  if (error) {
+    message.textContent = error.message;
+    return;
+  }
+
+  message.textContent = data.session
+    ? "Account created successfully!"
+    : "Account created! Check your email to confirm your account.";
+});
+
+// PASSWORD RESET REQUEST
+document.getElementById("forgot-password-btn").addEventListener("click", async () => {
+    const email = document.getElementById("login-email").value.trim();
+    const message = document.getElementById("auth-message");
+
+    if (!email) {
+        message.textContent = "Enter your email address first.";
+        return;
+    }
+
+    message.textContent = "Sending password reset email...";
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin
+    });
+
+    if (error) {
+        message.textContent = error.message;
+        return;
+    }
+
+    message.textContent = "Password reset email sent. Check your inbox.";
+});
+
+// HANDLE PASSWORD RECOVERY
+supabase.auth.onAuthStateChange((event, session) => {
+    if (event === "PASSWORD_RECOVERY") {
+        document.getElementById("login-form").hidden = true;
+        document.getElementById("reset-password-form").hidden = false;
+    }
+});
+
+// UPDATE PASSWORD
+document.getElementById("reset-password-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const newPassword = document.getElementById("new-password").value;
+    const message = document.getElementById("auth-message");
+
+    message.textContent = "Updating password...";
+
+    const { error } = await supabase.auth.updateUser({
+        password: newPassword
+    });
+
+    if (error) {
+        message.textContent = error.message;
+        return;
+    }
+
+    message.textContent = "Password updated successfully! You can now log in.";
+
+    document.getElementById("reset-password-form").hidden = true;
+    document.getElementById("login-form").hidden = false;
+});
+
+
+// USER LOGIN
+document.getElementById("login-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const email = document.getElementById("login-email").value.trim();
+  const password = document.getElementById("login-password").value;
+  const message = document.getElementById("auth-message");
+
+  message.textContent = "Logging in...";
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+ // USER LOGOUT
+document.getElementById("logout-btn").addEventListener("click", async () => {
+    const { error } = await supabase.auth.signOut();
+
+    const message = document.getElementById("auth-message");
+
+    if (error) {
+        message.textContent = error.message;
+        return;
+    }
+
+    message.textContent = "You have logged out successfully!";
+});
+
+
+  if (error) {
+    message.textContent = error.message;
+    return;
+  }
+
+  message.textContent = "Login successful!";
+});
 posts = loadPosts();
 renderPosts();
 

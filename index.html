@@ -33,23 +33,31 @@
         <button type="submit">Sign Up</button>
     </form>
 
-    <form id="login-form">
-        <h3>Login</h3>
+   
+<!-- LOGIN FORM -->
+<form id="login-form">
+    <h3>Login</h3>
 
-        <input
-            type="email"
-            id="login-email"
-            placeholder="Email address"
-            required
-        >
+    <input
+        type="email"
+        id="login-email"
+        placeholder="Email address"
+        required
+    >
 
-        <input
-            type="password"
-            id="login-password"
-            placeholder="Password"
-            required
-        >
-        <form id="reset-password-form" hidden>
+    <input
+        type="password"
+        id="login-password"
+        placeholder="Password"
+        required
+    >
+
+    <button type="submit">Login</button>
+    <button type="button" id="forgot-password-btn">Forgot Password?</button>
+</form>
+
+<!-- PASSWORD RESET FORM -->
+<form id="reset-password-form" hidden>
     <h3>Choose a New Password</h3>
 
     <input
@@ -62,9 +70,9 @@
 
     <button type="submit">Update Password</button>
 </form>
-
-        <button type="submit">Login</button>
-    </form>
+<button id="logout-btn" type="button" hidden>
+    Logout
+</button>
 
     <p id="auth-message"></p>
 </section>
