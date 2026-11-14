@@ -13,14 +13,31 @@ let posts = [];
 let statusPostId = null;
 
 // LOAD POSTS FROM LOCAL STORAGE
-function loadPosts() {
-  try {
-    const savedPosts = localStorage.getItem(STORAGE_KEY);
-    return savedPosts ? JSON.parse(savedPosts) : [];
-  } catch (error) {
-    console.error("Could not load posts:", error);
+async function loadPosts() {
+  const { data, error } = await supabase
+    .from("items")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error loading posts:", error);
     return [];
   }
+
+  return data.map(item => ({
+    id: item.id,
+    name: item.title,
+    description: item.description,
+    category: item.category,
+    type: item.type,
+    department: item.department,
+    date: item.date,
+    location: item.location,
+    contact: item.contact,
+    status: item.status,
+    createdAt: item.created_at,
+    user_id: item.user_id
+  }));
 }
 
 // SAVE POSTS TO LOCAL STORAGE
